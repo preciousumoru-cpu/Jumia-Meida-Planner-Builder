@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jumia Automated Media Plan Builder 2026</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons CDN -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            jumia: {
+              orange: '#F68B1E',
+              orangeHover: '#DE730B',
+              navy: '#0B3C68',
+              navyDark: '#072744',
+              navyLight: '#16578E',
+              grayBg: '#F1F3F6',
+              border: '#E0E5EC',
+              onsite: '#D9E1F2',
+              onsiteText: '#1F497D',
+              display: '#E2EFDA',
+              displayText: '#375623',
+              crm: '#FFF2CC',
+              crmText: '#7F6000',
+              sponsored: '#E8E5F4',
+              sponsoredText: '#4B3F72',
+              pom: '#FCE4D6',
+              pomText: '#833C0C'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f3f6;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c3cad5;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #f68b1e;
+    }
+    .print-only {
+      display: none;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printArea, #printArea * {
+        visibility: visible;
+      }
+      #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body class="bg-jumia-grayBg text-slate-800 antialiased min-h-screen flex flex-col font-sans">
+
+  <!-- Top Global Header -->
+  <header class="bg-jumia-navyDark text-white sticky top-0 z-50 shadow-md border-b-2 border-jumia-orange">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-jumia-orange text-white w-9 h-9 rounded-lg flex items-center justify-center font-black shadow-md tracking-tighter text-xl">
+          <i class="ph ph-shopping-bag font-bold"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold text-xl tracking-tight text-white uppercase">JUMIA</span>
+            <span class="text-jumia-orange text-xs font-bold tracking-widest px-1.5 py-0.5 bg-jumia-navy rounded border border-jumia-orange/40">ADVERTISING 2026</span>
+          </div>
+          <p class="text-[11px] text-slate-300 font-medium">Smart Automated Media Planning & Commercial Flighting Engine</p>
+        </div>
+      </div>
+
+      <!-- Currency Switcher & Top Actions -->
+      <div class="flex items-center space-x-3">
+        <div class="bg-slate-800/80 p-1 rounded-lg border border-slate-700 flex items-center text-xs font-semibold">
+          <button id="currBtnNGN" onclick="setCurrency('NGN')" class="px-2.5 py-1 rounded bg-jumia-orange text-white transition shadow-sm flex items-center space-x-1">
+            <span>₦ NGN</span>
+          </button>
+          <button id="currBtnUSD" onclick="setCurrency('USD')" class="px-2.5 py-1 rounded text-slate-300 hover:text-white transition flex items-center space-x-1">
+            <span>$ USD</span>
+          </button>
+        </div>
+        <div class="hidden md:flex text-xs bg-slate-800/60 px-2.5 py-1.5 rounded border border-slate-700 text-slate-300 items-center gap-1.5">
+          <i class="ph ph-arrows-left-right text-jumia-orange"></i>
+          <span>1 USD = <strong class="text-white">₦1,500</strong></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="bg-white border-b border-slate-200 sticky top-16 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center overflow-x-auto">
+      <nav class="flex space-x-1 sm:space-x-4 py-2 min-w-max" aria-label="Tabs">
+        <button id="tabBtnPlan" onclick="switchTab('plan')" class="tab-btn px-3.5 py-2 rounded-md font-semibold text-sm flex items-center space-x-2 transition border-b-2 border-jumia-orange text-jumia-navy bg-orange-50/70">
+          <i class="ph ph-chart-polar text-base text-jumia-orange"></i>
+          <span>Campaign Media Plan Builder</span>
+        </button>
+        <button id="tabBtnRatecard" onclick="switchTab('ratecard')" class="tab-btn px-3.5 py-2 rounded-md font-semibold text-sm flex items-center space-x-2 transition border-b-2 border-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+          <i class="ph ph-receipt text-base"></i>
+          <span>2026 Rate Card & Benchmarks</span>
+        </button>
+        <button id="tabBtnCalendar" onclick="switchTab('calendar')" class="tab-btn px-3.5 py-2 rounded-md font-semibold text-sm flex items-center space-x-2 transition border-b-2 border-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+          <i class="ph ph-calendar-check text-base"></i>
+          <span>Commercial Roadmap & Events</span>
+        </button>
+      </nav>
+
+      <div class="flex items-center space-x-2 py-1.5 no-print">
+        <button onclick="exportToCSV()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-700 text-white hover:bg-emerald-800 transition flex items-center space-x-1.5 shadow-sm">
+          <i class="ph ph-file-csv text-base"></i>
+          <span class="hidden sm:inline">Export CSV</span>
+        </button>
+        <button onclick="window.print()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-700 text-white hover:bg-slate-800 transition flex items-center space-x-1.5 shadow-sm">
+          <i class="ph ph-printer text-base"></i>
+          <span class="hidden sm:inline">Print / PDF</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: CAMPAIGN MEDIA PLAN BUILDER        -->
+    <!-- ========================================== -->
+    <div id="tabContentPlan" class="space-y-6">
+
+      <!-- Dynamic Configuration Form Card -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-6 transition hover:shadow-md">
+        <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 mb-4 border-b border-slate-200 gap-2">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <span class="w-2.5 h-6 bg-jumia-orange rounded-full inline-block"></span>
+              Campaign Parameters & Strategy Driver
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">Input your partner specs and commercial targets to trigger Jumia's algorithmic budget allocation.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-medium text-slate-600">Preset Scenarios:</span>
+            <button onclick="applyPreset('beauty_launch')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded border border-slate-300 font-medium transition">Nivea Beauty Push</button>
+            <button onclick="applyPreset('tech_week')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded border border-slate-300 font-medium transition">Xiaomi Tech Week</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Partner & Campaign -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Partner / Brand Name</label>
+            <input type="text" id="cfgBrand" value="Nivea Official Store" oninput="runPlanCalculation()"
+              class="w-full text-sm rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-jumia-orange focus:outline-none transition">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Campaign Title</label>
+            <input type="text" id="cfgCampaign" value="Q2 Mega Brand Days & Super Sales" oninput="runPlanCalculation()"
+              class="w-full text-sm rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-jumia-orange focus:outline-none transition">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Product Category</label>
+            <select id="cfgCategory" onchange="runPlanCalculation()"
+              class="w-full text-sm rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-jumia-orange focus:outline-none bg-white transition">
+              <option value="Health & Beauty">Health & Beauty</option>
+              <option value="Phones & Tablets">Phones & Tablets</option>
+              <option value="Electronics & Appliances">Electronics & Appliances</option>
+              <option value="Supermarket & FMCG">Supermarket & FMCG</option>
+              <option value="Fashion & Apparel">Fashion & Apparel</option>
+              <option value="Computing & Accessories">Computing & Accessories</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Commercial Event / Calendar</label>
+            <select id="cfgEvent" onchange="onEventChanged()"
+              class="w-full text-sm rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-jumia-orange focus:outline-none bg-white transition">
+              <option value="BAU Regular Month">BAU Regular Month (Baseline Traffic)</option>
+              <option value="February - Valentine's Day">Feb: Valentine's Day (Tier 2)</option>
+              <option value="March - Tech Week">Mar: Jumia Tech Week (Tier 1 Mega)</option>
+              <option value="May - Super Brand Days">May: Super Brand Days (Tier 2)</option>
+              <option value="June - Jumia Anniversary">Jun: Jumia Anniversary (Tier 1 Mega)</option>
+              <option value="August - Back to School">Aug: Back to School (Tier 2)</option>
+              <option value="November - Black Friday">Nov: Black Friday Festival (Tier 1 Super)</option>
+              <option value="December - Holiday Sale">Dec: Holiday Sale (Tier 1 Mega)</option>
+            </select>
+          </div>
+
+          <!-- Primary Objective -->
+          <div class="lg:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Primary Objective & Purchasing Funnel Priority</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <label class="objective-card cursor-pointer border rounded-lg p-2.5 text-center text-xs font-semibold transition hover:border-jumia-orange flex flex-col items-center justify-center gap-1 bg-slate-50">
+                <input type="radio" name="cfgGoal" value="awareness" onchange="runPlanCalculation()" class="hidden">
+                <i class="ph ph-eye text-base text-sky-600"></i>
+                <span>Awareness</span>
+                <span class="text-[10px] text-slate-400 font-normal">HP Sliders & Reach</span>
+              </label>
+
+              <label class="objective-card cursor-pointer border rounded-lg p-2.5 text-center text-xs font-semibold transition hover:border-jumia-orange flex flex-col items-center justify-center gap-1 bg-slate-50">
+                <input type="radio" name="cfgGoal" value="consideration" onchange="runPlanCalculation()" class="hidden">
+                <i class="ph ph-cursor-click text-base text-amber-600"></i>
+                <span>Consideration</span>
+                <span class="text-[10px] text-slate-400 font-normal">Search & Banners</span>
+              </label>
+
+              <label class="objective-card cursor-pointer border rounded-lg p-2.5 text-center text-xs font-semibold transition hover:border-jumia-orange flex flex-col items-center justify-center gap-1 bg-orange-50/70 border-jumia-orange text-jumia-navy">
+                <input type="radio" name="cfgGoal" value="sales" checked onchange="runPlanCalculation()" class="hidden">
+                <i class="ph ph-trend-up text-base text-jumia-orange"></i>
+                <span>Sales Uplift</span>
+                <span class="text-[10px] text-slate-400 font-normal">SP, Floors & Push</span>
+              </label>
+
+              <label class="objective-card cursor-pointer border rounded-lg p-2.5 text-center text-xs font-semibold transition hover:border-jumia-orange flex flex-col items-center justify-center gap-1 bg-slate-50">
+                <input type="radio" name="cfgGoal" value="full_funnel" onchange="runPlanCalculation()" class="hidden">
+                <i class="ph ph-funnel text-base text-purple-600"></i>
+                <span>Full Funnel</span>
+                <span class="text-[10px] text-slate-400 font-normal">360° Balanced Mix</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Total Budget -->
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="block text-xs font-bold text-slate-700 uppercase">Total Advertising Budget</label>
+              <span id="currencyBadge" class="text-[10px] font-extrabold text-jumia-orange">NGN (₦)</span>
+            </div>
+            <div class="relative">
+              <span id="budgetSymbolPrefix" class="absolute inset-y-0 left-0 pl-3 flex items-center text-sm font-bold text-slate-500">₦</span>
+              <input type="number" id="cfgBudget" value="7500000" step="50000" min="500000" oninput="runPlanCalculation()"
+                class="w-full text-sm font-bold text-slate-900 rounded-lg border border-slate-300 pl-8 pr-3 py-2 focus:ring-2 focus:ring-jumia-orange focus:outline-none transition">
+            </div>
+            <div class="flex items-center gap-1 mt-1.5" id="budgetPresets">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Duration & Flighting -->
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="block text-xs font-bold text-slate-700 uppercase">Campaign Flight Duration</label>
+              <span id="durationVal" class="text-xs font-extrabold text-jumia-navy">14 Days</span>
+            </div>
+            <input type="range" id="cfgDuration" min="3" max="30" value="14" step="1" oninput="updateDurationLabel(); runPlanCalculation()"
+              class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-jumia-orange mt-2">
+            <div class="flex justify-between text-[10px] text-slate-600 font-bold mt-1">
+              <span>3 Days (Flash)</span>
+              <span>14 Days (Standard)</span>
+              <span>30 Days (Full Month)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Strategic Summary Metric Cards -->
+      <div id="printArea" class="space-y-6">
+
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">Total Campaign Spend</span>
+            <div class="mt-2">
+              <div id="sumSpend" class="text-lg sm:text-xl font-black text-slate-900">₦0</div>
+              <span id="sumBudgetStatus" class="inline-flex items-center text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-1">
+                <i class="ph ph-check-circle mr-1"></i> 100% Reconciled
+              </span>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">Forecasted Impressions</span>
+            <div class="mt-2">
+              <div id="sumImpressions" class="text-lg sm:text-xl font-black text-jumia-navy">0</div>
+              <span class="text-[10px] text-slate-400">Total consumer touchpoints</span>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">Estimated Clicks (Sessions)</span>
+            <div class="mt-2">
+              <div id="sumClicks" class="text-lg sm:text-xl font-black text-jumia-orange">0</div>
+              <span class="text-[10px] text-slate-400">Traffic driven to Brand SIS / PDP</span>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">Blended Avg CTR</span>
+            <div class="mt-2">
+              <div id="sumCTR" class="text-lg sm:text-xl font-black text-purple-700">0.00%</div>
+              <span class="text-[10px] text-slate-400">Weighted historical conversion</span>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between col-span-2 md:col-span-1">
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">Effective CPC / CPV</span>
+            <div class="mt-2">
+              <div id="sumCPC" class="text-lg sm:text-xl font-black text-slate-800">₦0.00</div>
+              <span class="text-[10px] text-slate-400">Cost per qualified shopper</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Strategy Diagnostics Banner -->
+        <div id="strategyBanner" class="rounded-xl border border-slate-200 p-4 bg-white flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Detailed Media Plan Excel Sheet View -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center space-x-2">
+              <i class="ph ph-table text-jumia-orange text-lg"></i>
+              <h3 class="font-bold text-sm sm:text-base tracking-wide text-white">Media Plan Allocation Matrix (2026 Rate Card Structure)</h3>
+            </div>
+            <div class="flex items-center space-x-2 text-xs">
+              <span class="inline-flex items-center px-2 py-0.5 rounded bg-jumia-onsite text-jumia-onsiteText font-bold text-[10px]">Onsite</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded bg-jumia-display text-jumia-displayText font-bold text-[10px]">Display GAM</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded bg-jumia-crm text-jumia-crmText font-bold text-[10px]">CRM Direct</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded bg-jumia-sponsored text-jumia-sponsoredText font-bold text-[10px]">Sponsored Ads</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded bg-jumia-pom text-jumia-pomText font-bold text-[10px]">Social & POM</span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse" id="mediaPlanTable">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 font-extrabold uppercase border-b border-slate-300 text-[11px]">
+                  <th class="p-3">Channel</th>
+                  <th class="p-3">Placement & Ad Asset</th>
+                  <th class="p-3">Audience / Landing Page</th>
+                  <th class="p-3">Pricing Metric</th>
+                  <th class="p-3 text-right">Official 2026 Rate</th>
+                  <th class="p-3 text-center">Flight Qty</th>
+                  <th class="p-3 text-right">Budget Allocation</th>
+                  <th class="p-3 text-right">Est. Impressions</th>
+                  <th class="p-3 text-center">CTR Bench.</th>
+                  <th class="p-3 text-right">Est. Clicks</th>
+                  <th class="p-3 text-center no-print">Tuning</th>
+                </tr>
+              </thead>
+              <tbody id="planTableBody" class="divide-y divide-slate-200 font-medium">
+                <!-- Injected via JavaScript -->
+              </tbody>
+              <tfoot id="planTableFoot" class="bg-slate-100 font-black text-slate-900 border-t-2 border-slate-400">
+                <!-- Totals injected via JavaScript -->
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- Dynamic Gantt Calendar Flighting Matrix -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-jumia-navy text-white px-5 py-3.5 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <i class="ph ph-calendar-blank text-jumia-orange text-lg"></i>
+              <h3 class="font-bold text-sm tracking-wide text-white">Commercial Calendar Flighting & Execution Schedule</h3>
+            </div>
+            <span class="text-xs text-slate-300 font-medium">Active Days Marked with [X]</span>
+          </div>
+
+          <div class="p-4 overflow-x-auto">
+            <div class="text-xs text-slate-500 mb-2 font-medium">
+              Mapping campaign flighting across pre-tease, live commercial peak, and conversion window for selected event:
+              <strong id="flightingEventLabel" class="text-slate-800">BAU Regular Month</strong>
+            </div>
+
+            <div id="flightingGridContainer" class="min-w-[700px]">
+              <!-- Generated Gantt grid table -->
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- end print area -->
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: OFFICIAL 2026 RATE CARD DIRECTORY  -->
+    <!-- ========================================== -->
+    <div id="tabContentRatecard" class="space-y-6 hidden">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-slate-200 gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i class="ph ph-books text-jumia-orange text-xl"></i>
+              Jumia Official 2026 Advertising Rate Card & Benchmarks
+            </h2>
+            <p class="text-xs text-slate-500">Directly sourced from official rate files for Jumia Nigeria and Pan-African advertising units.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="rateSearchInput" oninput="filterRateCardTable()" placeholder="Search channels, placements..."
+              class="text-xs rounded-lg border border-slate-300 px-3 py-1.5 focus:ring-2 focus:ring-jumia-orange focus:outline-none w-64">
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse" id="rateCardTable">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 font-extrabold uppercase border-b border-slate-300 text-[11px]">
+                <th class="p-3">Channel Bucket</th>
+                <th class="p-3">Placement Name</th>
+                <th class="p-3">Funnel Stage</th>
+                <th class="p-3">Billing Metric</th>
+                <th class="p-3 text-right">Rate (USD $)</th>
+                <th class="p-3 text-right">Rate (NGN ₦)</th>
+                <th class="p-3 text-center">Benchmark CTR</th>
+                <th class="p-3">Ad Specifications & Target Capabilities</th>
+              </tr>
+            </thead>
+            <tbody id="rateCardBody" class="divide-y divide-slate-200 font-medium">
+              <!-- Dynamically populated from JS rate data -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: 2026 COMMERCIAL EVENTS ROADMAP     -->
+    <!-- ========================================== -->
+    <div id="tabContentCalendar" class="space-y-6 hidden">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+        <div class="pb-4 mb-4 border-b border-slate-200">
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i class="ph ph-calendar text-jumia-orange text-xl"></i>
+            2026 Commercial Master Calendar & Campaign Tiers
+          </h2>
+          <p class="text-xs text-slate-500">Align partner investments with traffic peaks across Mega Tier 1 events and BAU Payday windows.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="calendarCardsContainer">
+          <!-- Generated from commercialEvents data array -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-xs text-slate-500 text-center mt-auto">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center space-x-2">
+        <span class="font-extrabold text-slate-800">JUMIA ADVERTISING OPS</span>
+        <span>•</span>
+        <span>Internal SVS & Partner Media Planner 2026</span>
+      </div>
+      <div>
+        <span>Exchange Anchor: 1 USD = ₦1,500 | GAM & Mirakl Automated Delivery Engine</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic & Data Script -->
+  <script>
+    /* =======================================================================
+       1. DATA DEFINITIONS & CONSTANTS
+       ======================================================================= */
+    const USD_TO_NGN = 1500;
+    let currentCurrency = 'NGN'; // 'NGN' or 'USD'
+
+    // Preset configurations for one-click demos
+    const PRESETS = {
+      beauty_launch: {
+        brand: 'Nivea Official Store',
+        campaign: 'Radiant Glow Q2 Launch',
+        category: 'Health & Beauty',
+        goal: 'sales',
+        budget: 6500000,
+        duration: 14,
+        event: 'BAU Regular Month'
+      },
+      tech_week: {
+        brand: 'Xiaomi Nigeria',
+        campaign: 'Redmi Series Tech Week Mega Promo',
+        category: 'Phones & Tablets',
+        goal: 'full_funnel',
+        budget: 12000000,
+        duration: 14,
+        event: 'March - Tech Week'
+      }
+    };
+
+    // Official 2026 Jumia Rate Card Inventory
+    const RATE_CARD_ITEMS = [
+      {
+        id: 'onsite_slider',
+        channel: 'Onsite',
+        colorClass: 'bg-jumia-onsite text-jumia-onsiteText',
+        rowBg: 'bg-[#F2F6FC]',
+        name: 'Homepage Top Slider (Slot 3/4)',
+        funnel: 'Awareness',
+        metric: 'CPD (1 Day)',
+        unitCostUSD: 650,
+        ctr: 0.0042,
+        audience: 'Broad App & Web Visitors',
+        landingPage: 'Brand SIS / Master LP',
+        specs: 'Desktop: 712x384px, Mobile Web & App: 660x330px (<100KB)',
+        tag: 'Mass Reach'
+      },
+      {
+        id: 'onsite_single_banner',
+        channel: 'Onsite',
+        colorClass: 'bg-jumia-onsite text-jumia-onsiteText',
+        rowBg: 'bg-[#F2F6FC]',
+        name: 'Homepage Universal Banner',
+        funnel: 'Awareness',
+        metric: 'CPD (1 Day)',
+        unitCostUSD: 300,
+        ctr: 0.0055,
+        audience: 'Homepage Browsers',
+        landingPage: 'Brand SIS',
+        specs: 'Desktop: 1170x60px, Mobile/App: 480x60px',
+        tag: 'Mass Reach'
+      },
+      {
+        id: 'onsite_floor_hp',
+        channel: 'Onsite',
+        colorClass: 'bg-jumia-onsite text-jumia-onsiteText',
+        rowBg: 'bg-[#F2F6FC]',
+        name: 'Homepage Product Floor Widget',
+        funnel: 'Sales Uplift',
+        metric: 'CPD (3 Days)',
+        unitCostUSD: 350,
+        ctr: 0.0070,
+        audience: 'High-Intent Shoppers',
+        landingPage: 'Product Detail Pages',
+        specs: 'Curated 6 Hero SKUs carousel directly on homepage',
+        tag: 'Conversion Driver'
+      },
+      {
+        id: 'onsite_cat_floor',
+        channel: 'Onsite',
+        colorClass: 'bg-jumia-onsite text-jumia-onsiteText',
+        rowBg: 'bg-[#F2F6FC]',
+        name: 'Category Page Product Floor',
+        funnel: 'Sales Uplift',
+        metric: 'Weekly (7 Days)',
+        unitCostUSD: 140,
+        ctr: 0.0089,
+        audience: 'In-Category Browsers',
+        landingPage: 'Curated Category SKUs',
+        specs: 'Category specific widget placement (up to 6 SKUs)',
+        tag: 'Category Dominance'
+      },
+      {
+        id: 'display_search',
+        channel: 'Display GAM',
+        colorClass: 'bg-jumia-display text-jumia-displayText',
+        rowBg: 'bg-[#F4F9F2]',
+        name: 'Search Results Top Banner',
+        funnel: 'Consideration',
+        metric: 'CPM (1,000 Imps)',
+        unitCostUSD: 2.50,
+        ctr: 0.0199,
+        audience: 'Search Keyword Query Target',
+        landingPage: 'Brand Store / Filtered Search',
+        specs: 'Desktop: 970x90px, Mobile: 320x100px. Target up to 10 top keywords',
+        tag: 'Intent Capture'
+      },
+      {
+        id: 'display_pdp',
+        channel: 'Display GAM',
+        colorClass: 'bg-jumia-display text-jumia-displayText',
+        rowBg: 'bg-[#F4F9F2]',
+        name: 'Competitor & Cross-Category PDP',
+        funnel: 'Consideration',
+        metric: 'CPM (1,000 Imps)',
+        unitCostUSD: 2.50,
+        ctr: 0.0163,
+        audience: 'Competitor Product Viewers',
+        landingPage: 'Brand Hero SKU PDP',
+        specs: 'Desktop: 970x250px, Mobile: 320x100px. Competitor poaching placement',
+        tag: 'Cross-Selling'
+      },
+      {
+        id: 'display_checkout',
+        channel: 'Display GAM',
+        colorClass: 'bg-jumia-display text-jumia-displayText',
+        rowBg: 'bg-[#F4F9F2]',
+        name: 'Jumia Checkout Success Banner',
+        funnel: 'Sales Uplift',
+        metric: 'CPM (1,000 Imps)',
+        unitCostUSD: 3.30,
+        ctr: 0.0494,
+        audience: 'Converted Verified Buyers',
+        landingPage: 'Repeat Purchase Offer / SIS',
+        specs: 'Desktop: 970x250px, Mobile: 320x100px. Placed on order confirmation page',
+        tag: 'Captive Audience'
+      },
+      {
+        id: 'crm_push',
+        channel: 'CRM Direct',
+        colorClass: 'bg-jumia-crm text-jumia-crmText',
+        rowBg: 'bg-[#FFFDF4]',
+        name: 'Hyper-Personalized Push Notification',
+        funnel: 'Sales Uplift',
+        metric: 'Per Blast (3 Logics)',
+        unitCostUSD: 350,
+        ctr: 0.0125,
+        audience: 'App Users (Cart Abandon / 90d Brand Viewers)',
+        landingPage: 'App Deep-Link (Curated Deal)',
+        specs: 'Title: 35 Chars, Body: 120 Chars. Airship Growth Tool engine',
+        tag: 'Hyper-Targeted'
+      },
+      {
+        id: 'crm_newsletter_banner',
+        channel: 'CRM Direct',
+        colorClass: 'bg-jumia-crm text-jumia-crmText',
+        rowBg: 'bg-[#FFFDF4]',
+        name: 'Segmented Newsletter Header Banner',
+        funnel: 'Consideration',
+        metric: 'Per Blast',
+        unitCostUSD: 280,
+        ctr: 0.0039,
+        audience: '5.4M Opted-In Email Subscribers',
+        landingPage: 'Brand Campaign Page',
+        specs: '600x300px JPEG/PNG (<80KB). Sent to targeted category audience',
+        tag: 'Broad Retention'
+      },
+      {
+        id: 'sponsored_products',
+        channel: 'Sponsored Ads',
+        colorClass: 'bg-jumia-sponsored text-jumia-sponsoredText',
+        rowBg: 'bg-[#F7F6FC]',
+        name: 'Sponsored Products (Mirakl PPC)',
+        funnel: 'Sales Uplift',
+        metric: 'CPC Bidding',
+        unitCostUSD: 0.05, // ~$0.05 / ₦75 per click
+        ctr: 0.0250,
+        audience: 'Catalog Organic Top Slots (#2, #7, #12)',
+        landingPage: 'Product Detail Page (Direct)',
+        specs: 'Boosts organic catalog ranking with 90% revenue attribution',
+        tag: 'Core Performance'
+      },
+      {
+        id: 'sponsored_brands',
+        channel: 'Sponsored Ads',
+        colorClass: 'bg-jumia-sponsored text-jumia-sponsoredText',
+        rowBg: 'bg-[#F7F6FC]',
+        name: 'Sponsored Brands Header Banner',
+        funnel: 'Intent',
+        metric: 'CPM (1,000 Imps)',
+        unitCostUSD: 2.50,
+        ctr: 0.0180,
+        audience: 'Search & Category Shoppers',
+        landingPage: 'Brand Store / 3 SKU Carousel',
+        specs: 'Logo + Custom Headline + 3 Product SKUs',
+        tag: 'High Visibility'
+      },
+      {
+        id: 'pom_meta_google',
+        channel: 'Social & POM',
+        colorClass: 'bg-jumia-pom text-jumia-pomText',
+        rowBg: 'bg-[#FDF6F2]',
+        name: 'Offsite Paid Online Marketing (Meta/Tiktok)',
+        funnel: 'Sales Uplift',
+        metric: 'Campaign Value (+15% Comm)',
+        unitCostUSD: 1000,
+        ctr: 0.0170,
+        audience: 'Off-Platform Shopper Re-engagement',
+        landingPage: 'Dynamic Catalog Feed to PDP',
+        specs: 'Dynamic Catalog Carousel + Static Feed Ads. Minimum $1,000',
+        tag: 'Off-Platform'
+      }
+    ];
+
+    // Master Commercial Roadmap 2026
+    const COMMERCIAL_EVENTS = [
+      {
+        name: 'January - New Year Kick-off',
+        month: 'January',
+        tier: 'BAU Month',
+        color: 'border-slate-300 bg-white',
+        focus: 'FMCG, Clearance, Resolution items',
+        strategy: 'Continuous presence on Search Display & Sponsored Products. Low CPM season.'
+      },
+      {
+        name: 'February - Valentine\'s Day',
+        month: 'February',
+        tier: 'Tier 2 Event',
+        color: 'border-pink-300 bg-pink-50/30',
+        focus: 'Fragrances, Beauty, Fashion, Phones, Tech gifts',
+        strategy: 'CRM Push blasts (Cart abandoners), Homepage Slider Slot 4, Category Banners.'
+      },
+      {
+        name: 'March - Jumia Tech Week',
+        month: 'March',
+        tier: 'Tier 1 Mega Event',
+        color: 'border-blue-400 bg-blue-50/30',
+        focus: 'Smartphones, Laptops, Audio, Consumer Electronics',
+        strategy: 'Super Brand Day takeover, Search dominance, massive Sponsored Products surge, Meta Dynamic ads.'
+      },
+      {
+        name: 'May - Super Brand Days',
+        month: 'May',
+        tier: 'Tier 2 Event',
+        color: 'border-amber-300 bg-amber-50/30',
+        focus: 'FMCG, Home essentials, Major Household brands',
+        strategy: 'Single banners, 3-day Homepage floor widgets, push notification blasts.'
+      },
+      {
+        name: 'June - Jumia Anniversary',
+        month: 'June',
+        tier: 'Tier 1 Mega Event',
+        color: 'border-orange-400 bg-orange-50/30',
+        focus: 'All Categories (Full Marketplace Push)',
+        strategy: 'Full-funnel takeover: Sliders, Checkouts, App Inboxes, Heavy Mirakl PPC budgets.'
+      },
+      {
+        name: 'August - Back to School',
+        month: 'August',
+        tier: 'Tier 2 Event',
+        color: 'border-emerald-300 bg-emerald-50/30',
+        focus: 'Laptops, Kids Apparel, Stationery, Footwear',
+        strategy: 'Segmented Newsletter SKU inserts, Search keyword GAM banners, Category takeovers.'
+      },
+      {
+        name: 'November - Black Friday Festival',
+        month: 'November',
+        tier: 'Tier 1 Super Event',
+        color: 'border-red-500 bg-red-50/30',
+        focus: 'All Marketplace Categories (Highest Traffic Peak of the Year)',
+        strategy: 'Full platform lock: Slot 3 Homepage Sliders, Checkout page ads, Offsite Dynamic retargeting.'
+      },
+      {
+        name: 'December - Holiday Sale',
+        month: 'December',
+        tier: 'Tier 1 Mega Event',
+        color: 'border-indigo-400 bg-indigo-50/30',
+        focus: 'Gifting, Groceries, Spirits, Fashion, Electronics',
+        strategy: 'Heavy consumer intent targeting, PDP competitor ads, In-App Notifications.'
+      }
+    ];
+
+    /* =======================================================================
+       2. GOAL-BASED BUDGET ALLOCATION ENGINE
+       ======================================================================= */
+    // Distribution weights across inventory items based on funnel goal
+    const WEIGHT_DISTRIBUTIONS = {
+      awareness: {
+        onsite_slider: 0.35,
+        onsite_single_banner: 0.20,
+        onsite_floor_hp: 0.10,
+        onsite_cat_floor: 0.00,
+        display_search: 0.10,
+        display_pdp: 0.05,
+        display_checkout: 0.05,
+        crm_push: 0.05,
+        crm_newsletter_banner: 0.05,
+        sponsored_products: 0.05,
+        sponsored_brands: 0.00,
+        pom_meta_google: 0.00
+      },
+      consideration: {
+        onsite_slider: 0.10,
+        onsite_single_banner: 0.10,
+        onsite_floor_hp: 0.05,
+        onsite_cat_floor: 0.10,
+        display_search: 0.25,
+        display_pdp: 0.20,
+        display_checkout: 0.05,
+        crm_push: 0.05,
+        crm_newsletter_banner: 0.05,
+        sponsored_products: 0.05,
+        sponsored_brands: 0.00,
+        pom_meta_google: 0.00
+      },
+      sales: {
+        onsite_slider: 0.05,
+        onsite_single_banner: 0.05,
+        onsite_floor_hp: 0.15,
+        onsite_cat_floor: 0.10,
+        display_search: 0.15,
+        display_pdp: 0.10,
+        display_checkout: 0.10,
+        crm_push: 0.10,
+        crm_newsletter_banner: 0.00,
+        sponsored_products: 0.20,
+        sponsored_brands: 0.00,
+        pom_meta_google: 0.00
+      },
+      full_funnel: {
+        onsite_slider: 0.20,
+        onsite_single_banner: 0.10,
+        onsite_floor_hp: 0.10,
+        onsite_cat_floor: 0.05,
+        display_search: 0.15,
+        display_pdp: 0.10,
+        display_checkout: 0.05,
+        crm_push: 0.10,
+        crm_newsletter_banner: 0.05,
+        sponsored_products: 0.10,
+        sponsored_brands: 0.00,
+        pom_meta_google: 0.00
+      }
+    };
+
+    // Global store of computed plan items for adjustments & export
+    let activePlanRows = [];
+
+    /* =======================================================================
+       3. FORMATTING HELPERS
+       ======================================================================= */
+    function formatCurrency(amountUSD) {
+      if (currentCurrency === 'NGN') {
+        const valNGN = Math.round(amountUSD * USD_TO_NGN);
+        return '₦' + valNGN.toLocaleString('en-NG');
+      } else {
+        return '$' + Math.round(amountUSD).toLocaleString('en-US');
+      }
+    }
+
+    function formatNumber(num) {
+      return Math.round(num).toLocaleString('en-US');
+    }
+
+    function formatPercent(decimal) {
+      return (decimal * 100).toFixed(2) + '%';
+    }
+
+    /* =======================================================================
+       4. CORE COMPUTATION ENGINE
+       ======================================================================= */
+    function runPlanCalculation() {
+      const budgetInput = parseFloat(document.getElementById('cfgBudget').value) || 0;
+      const budgetUSD = currentCurrency === 'NGN' ? (budgetInput / USD_TO_NGN) : budgetInput;
+
+      const durationDays = parseInt(document.getElementById('cfgDuration').value) || 14;
+      const goalRadio = document.querySelector('input[name="cfgGoal"]:checked');
+      const goal = goalRadio ? goalRadio.value : 'sales';
+      const eventName = document.getElementById('cfgEvent').value;
+      const category = document.getElementById('cfgCategory').value;
+
+      // Base weights
+      let weights = { ...WEIGHT_DISTRIBUTIONS[goal] };
+
+      // Adjust weights based on Budget scale
+      // E.g., if budget is large enough (> $2,000 / ₦3,000,000), enable Offsite POM or Sponsored Brands
+      if (budgetUSD >= 3000) {
+        weights.pom_meta_google = 0.15;
+        weights.sponsored_brands = 0.05;
+        // Normalize other weights
+        const reductionFactor = 0.80;
+        Object.keys(weights).forEach(k => {
+          if (k !== 'pom_meta_google' && k !== 'sponsored_brands') {
+            weights[k] = weights[k] * reductionFactor;
+          }
+        });
+      }
+
+      // Event modifier: Major Tier 1 events demand more Homepage prominence & Search
+      const isTier1 = eventName.includes('Tier 1') || eventName.includes('Black Friday') || eventName.includes('Anniversary');
+      if (isTier1) {
+        weights.onsite_slider += 0.05;
+        weights.display_search += 0.05;
+        // Trim CRM / Display slightly
+        if (weights.crm_newsletter_banner > 0.03) weights.crm_newsletter_banner -= 0.03;
+        if (weights.display_pdp > 0.07) weights.display_pdp -= 0.07;
+      }
+
+      // Compute Rows
+      let totalAssignedSpendUSD = 0;
+      let totalImpressions = 0;
+      let totalClicks = 0;
+
+      activePlanRows = RATE_CARD_ITEMS.map(item => {
+        const weight = weights[item.id] || 0;
+        if (weight <= 0) return null;
+
+        const allocatedUSD = budgetUSD * weight;
+        totalAssignedSpendUSD += allocatedUSD;
+
+        let flightQty = 1;
+        let impressions = 0;
+        let clicks = 0;
+
+        if (item.metric.includes('CPD (1 Day)')) {
+          // Days allocated
+          flightQty = Math.max(1, Math.round(allocatedUSD / item.unitCostUSD));
+          const adjustedCost = flightQty * item.unitCostUSD;
+          // Benchmark impressions for Homepage: ~450,000/day
+          impressions = flightQty * 480000;
+          clicks = Math.round(impressions * item.ctr);
+        } else if (item.metric.includes('CPD (3 Days)')) {
+          flightQty = Math.max(1, Math.round(allocatedUSD / item.unitCostUSD));
+          impressions = flightQty * 320000;
+          clicks = Math.round(impressions * item.ctr);
+        } else if (item.metric.includes('Weekly')) {
+          const weeks = Math.max(1, Math.round(durationDays / 7));
+          flightQty = weeks;
+          impressions = flightQty * 210000;
+          clicks = Math.round(impressions * item.ctr);
+        } else if (item.metric.includes('CPM')) {
+          // Standard GAM CPM
+          const cpmRate = item.unitCostUSD;
+          impressions = Math.round((allocatedUSD / cpmRate) * 1000);
+          flightQty = Math.round(impressions / 1000) + 'k imps';
+          clicks = Math.round(impressions * item.ctr);
+        } else if (item.metric.includes('CPC')) {
+          // Sponsored products (direct clicks)
+          clicks = Math.round(allocatedUSD / item.unitCostUSD);
+          impressions = Math.round(clicks / item.ctr);
+          flightQty = formatNumber(clicks) + ' Clicks';
+        } else if (item.metric.includes('Per Blast')) {
+          flightQty = Math.max(1, Math.round(allocatedUSD / item.unitCostUSD));
+          impressions = flightQty * 180000;
+          clicks = Math.round(impressions * item.ctr);
+        } else {
+          // General default
+          impressions = Math.round((allocatedUSD / 2.5) * 1000);
+          clicks = Math.round(impressions * item.ctr);
+          flightQty = '1 Flight';
+        }
+
+        totalImpressions += impressions;
+        totalClicks += clicks;
+
+        return {
+          ...item,
+          weight,
+          allocatedUSD,
+          flightQty,
+          impressions,
+          clicks
+        };
+      }).filter(Boolean);
+
+      // Render Table and Summary Cards
+      renderMediaPlanTable(activePlanRows, totalAssignedSpendUSD, totalImpressions, totalClicks, budgetUSD);
+      renderSummaryCards(totalAssignedSpendUSD, totalImpressions, totalClicks, budgetUSD);
+      renderStrategyBanner(goal, eventName, category, durationDays, totalClicks);
+      renderFlightingGrid(activePlanRows, durationDays, eventName);
+    }
+
+    /* =======================================================================
+       5. TABLE & DOM RENDERING
+       ======================================================================= */
+    function renderMediaPlanTable(rows, totalSpendUSD, totalImpressions, totalClicks, targetBudgetUSD) {
+      const tbody = document.getElementById('planTableBody');
+      const tfoot = document.getElementById('planTableFoot');
+
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="11" class="text-center p-6 text-slate-400">No channels allocated for this configuration.</td></tr>`;
+        tfoot.innerHTML = '';
+        return;
+      }
+
+      tbody.innerHTML = rows.map((r, idx) => {
+        const rateDisplay = formatCurrency(r.unitCostUSD);
+        const spendDisplay = formatCurrency(r.allocatedUSD);
+
+        return `
+          <tr class="${r.rowBg} hover:bg-slate-50 transition border-b border-slate-200">
+            <td class="p-3 whitespace-nowrap">
+              <span class="inline-block px-2 py-0.5 rounded font-bold text-[10px] ${r.colorClass}">
+                ${r.channel}
+              </span>
+            </td>
+            <td class="p-3">
+              <div class="font-bold text-slate-900">${r.name}</div>
+              <div class="text-[10px] text-slate-500">${r.specs}</div>
+            </td>
+            <td class="p-3 text-slate-600">
+              <div class="font-medium">${r.audience}</div>
+              <div class="text-[10px] text-jumia-navy font-semibold">${r.landingPage}</div>
+            </td>
+            <td class="p-3 whitespace-nowrap text-slate-600 font-mono text-[11px]">${r.metric}</td>
+            <td class="p-3 text-right whitespace-nowrap font-mono font-bold text-slate-700">${rateDisplay}</td>
+            <td class="p-3 text-center whitespace-nowrap font-semibold text-slate-800">${r.flightQty}</td>
+            <td class="p-3 text-right whitespace-nowrap font-bold text-jumia-navy text-sm font-mono">${spendDisplay}</td>
+            <td class="p-3 text-right whitespace-nowrap font-mono text-slate-700">${formatNumber(r.impressions)}</td>
+            <td class="p-3 text-center whitespace-nowrap font-mono font-bold text-emerald-700 bg-emerald-50/50">${formatPercent(r.ctr)}</td>
+            <td class="p-3 text-right whitespace-nowrap font-mono font-bold text-jumia-orange">${formatNumber(r.clicks)}</td>
+            <td class="p-3 text-center whitespace-nowrap no-print">
+              <button onclick="tweakChannelAllocation(${idx}, 0.15)" title="Increase 15%" class="text-xs text-slate-600 hover:text-jumia-orange p-1 hover:bg-white rounded transition">
+                <i class="ph ph-plus-circle font-bold"></i>
+              </button>
+              <button onclick="tweakChannelAllocation(${idx}, -0.15)" title="Decrease 15%" class="text-xs text-slate-600 hover:text-red-600 p-1 hover:bg-white rounded transition">
+                <i class="ph ph-minus-circle font-bold"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      const blendedCTR = totalImpressions > 0 ? (totalClicks / totalImpressions) : 0;
+      tfoot.innerHTML = `
+        <tr class="text-xs">
+          <td colspan="6" class="p-3 text-slate-800 font-black uppercase tracking-wider text-right">
+            Plan Totals Reconciled:
+          </td>
+          <td class="p-3 text-right whitespace-nowrap text-sm font-black font-mono text-jumia-navy">
+            ${formatCurrency(totalSpendUSD)}
+          </td>
+          <td class="p-3 text-right whitespace-nowrap font-black font-mono text-slate-900">
+            ${formatNumber(totalImpressions)}
+          </td>
+          <td class="p-3 text-center whitespace-nowrap font-black font-mono text-emerald-800">
+            ${formatPercent(blendedCTR)}
+          </td>
+          <td class="p-3 text-right whitespace-nowrap font-black font-mono text-jumia-orange text-sm">
+            ${formatNumber(totalClicks)}
+          </td>
+          <td class="no-print"></td>
+        </tr>
+      `;
+    }
+
+    function renderSummaryCards(totalSpendUSD, totalImpressions, totalClicks, budgetUSD) {
+      document.getElementById('sumSpend').innerText = formatCurrency(totalSpendUSD);
+      document.getElementById('sumImpressions').innerText = formatNumber(totalImpressions);
+      document.getElementById('sumClicks').innerText = formatNumber(totalClicks);
+
+      const blendedCTR = totalImpressions > 0 ? (totalClicks / totalImpressions) : 0;
+      document.getElementById('sumCTR').innerText = formatPercent(blendedCTR);
+
+      const effectiveCPCUSD = totalClicks > 0 ? (totalSpendUSD / totalClicks) : 0;
+      document.getElementById('sumCPC').innerText = formatCurrency(effectiveCPCUSD);
+
+      // Reconciled Badge
+      const statusPill = document.getElementById('sumBudgetStatus');
+      const diffUSD = Math.abs(totalSpendUSD - budgetUSD);
+      if (diffUSD <= 15) {
+        statusPill.className = 'inline-flex items-center text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded mt-1 border border-emerald-200';
+        statusPill.innerHTML = '<i class="ph ph-check-circle mr-1 text-xs"></i> 100% Reconciled';
+      } else if (totalSpendUSD < budgetUSD) {
+        statusPill.className = 'inline-flex items-center text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded mt-1 border border-amber-200';
+        statusPill.innerHTML = `<i class="ph ph-info mr-1 text-xs"></i> Under Budget: ${formatCurrency(budgetUSD - totalSpendUSD)} remaining`;
+      } else {
+        statusPill.className = 'inline-flex items-center text-[10px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded mt-1 border border-red-200';
+        statusPill.innerHTML = `<i class="ph ph-warning-circle mr-1 text-xs"></i> Over Budget: +${formatCurrency(totalSpendUSD - budgetUSD)}`;
+      }
+    }
+
+    function renderStrategyBanner(goal, eventName, category, durationDays, totalClicks) {
+      const banner = document.getElementById('strategyBanner');
+      let goalAdvice = '';
+
+      if (goal === 'awareness') {
+        goalAdvice = 'Focusing on mass top-of-funnel reach with Homepage Sliders & high-visibility universal banners to maximize brand equity.';
+      } else if (goal === 'consideration') {
+        goalAdvice = 'Dominating search keywords and competitor PDP placements to intercept high-intent buyers looking for related category items.';
+      } else if (goal === 'sales') {
+        goalAdvice = 'Aggressive product floor widgets, checkout success ads, and Mirakl Sponsored Products with high CTR push notifications for direct sales lift.';
+      } else {
+        goalAdvice = 'Balanced 360-degree approach distributing weight from homepage awareness through search intent down to checkout and repeat visits.';
+      }
+
+      banner.innerHTML = `
+        <div class="flex items-start space-x-3">
+          <div class="p-2 bg-orange-100 text-jumia-orange rounded-lg">
+            <i class="ph ph-lightbulb-filament text-xl font-bold"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-900 text-xs sm:text-sm">
+              Strategic Blueprint: ${category} • ${eventName} • ${durationDays}-Day Window
+            </h4>
+            <p class="text-slate-600 text-xs mt-0.5">${goalAdvice}</p>
+          </div>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-right flex-shrink-0">
+          <span class="text-[10px] uppercase font-bold text-slate-600 block">Traffic Efficiency Index</span>
+          <span class="text-sm font-extrabold text-jumia-navy font-mono">${Math.round(totalClicks / durationDays)} est. clicks/day</span>
+        </div>
+      `;
+    }
+
+    /* =======================================================================
+       6. INTERACTIVE FLIGHTING GANTT MATRIX
+       ======================================================================= */
+    function renderFlightingGrid(rows, durationDays, eventName) {
+      document.getElementById('flightingEventLabel').innerText = eventName;
+      const container = document.getElementById('flightingGridContainer');
+
+      // Cap columns at max 21 days for crisp horizontal readability, or step if 30 days
+      const daysCount = Math.min(durationDays, 21);
+
+      let headerDaysHtml = '';
+      for (let d = 1; d <= daysCount; d++) {
+        // Tag payday or launch days
+        const isPeak = (d === 1 || d === Math.round(daysCount / 2) || d === daysCount);
+        headerDaysHtml += `
+          <th class="p-1.5 text-center font-bold text-[10px] border border-slate-200 ${isPeak ? 'bg-orange-100 text-jumia-orange' : 'bg-slate-100 text-slate-600'}">
+            D${d}
+          </th>
+        `;
+      }
+
+      let rowsHtml = rows.map(r => {
+        let cellsHtml = '';
+
+        for (let d = 1; d <= daysCount; d++) {
+          let isActive = false;
+
+          // Determine schedule logic based on asset type
+          if (r.id === 'onsite_slider') {
+            // Sliders typically run on high traffic launch days (D1-D3 or weekend spikes)
+            isActive = (d <= 3 || d === 7 || d === 8 || d === daysCount);
+          } else if (r.id === 'crm_push') {
+            // Push notifications are spaced out (e.g. D2, D8, D13)
+            isActive = (d === 2 || d === 8 || d === 14);
+          } else if (r.id === 'onsite_single_banner' || r.id === 'onsite_cat_floor') {
+            // Week 1 or Week 2 blocks
+            isActive = (d <= 7) || (d >= 8 && d <= 14 && durationDays > 7);
+          } else if (r.id === 'display_search' || r.id === 'sponsored_products' || r.id === 'display_checkout') {
+            // Always-on performance throughout flight
+            isActive = true;
+          } else {
+            // Alternating
+            isActive = (d % 2 !== 0);
+          }
+
+          cellsHtml += `
+            <td class="p-1 text-center border border-slate-200">
+              ${isActive ? `
+                <span class="inline-flex items-center justify-center w-5 h-5 rounded text-[10px] font-black bg-jumia-orange text-white shadow-xs">
+                  X
+                </span>
+              ` : `
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-slate-200"></span>
+              `}
+            </td>
+          `;
+        }
+
+        return `
+          <tr class="hover:bg-slate-50 border-b border-slate-200">
+            <td class="p-2 whitespace-nowrap text-left border border-slate-200 bg-white">
+              <span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold mr-1 ${r.colorClass}">${r.channel}</span>
+              <strong class="text-slate-800 text-[11px]">${r.name}</strong>
+            </td>
+            ${cellsHtml}
+          </tr>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <table class="w-full text-center border-collapse text-xs">
+          <thead>
+            <tr>
+              <th class="p-2 text-left font-bold text-slate-700 bg-slate-100 border border-slate-200 w-64 text-[11px]">Channel & Placement</th>
+              ${headerDaysHtml}
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      `;
+    }
+
+    /* =======================================================================
+       7. TUNING & INTERACTIVITY CONTROLS
+       ======================================================================= */
+    function tweakChannelAllocation(rowIndex, percentDelta) {
+      if (!activePlanRows[rowIndex]) return;
+      const row = activePlanRows[rowIndex];
+
+      // Modify USD allocation
+      const currentSpend = row.allocatedUSD;
+      const newSpend = Math.max(50, currentSpend * (1 + percentDelta));
+      const deltaUSD = newSpend - currentSpend;
+
+      row.allocatedUSD = newSpend;
+
+      // Re-estimate impressions and clicks
+      if (row.metric.includes('CPM')) {
+        row.impressions = Math.round((newSpend / row.unitCostUSD) * 1000);
+        row.clicks = Math.round(row.impressions * row.ctr);
+        row.flightQty = Math.round(row.impressions / 1000) + 'k imps';
+      } else if (row.metric.includes('CPC')) {
+        row.clicks = Math.round(newSpend / row.unitCostUSD);
+        row.impressions = Math.round(row.clicks / row.ctr);
+        row.flightQty = formatNumber(row.clicks) + ' Clicks';
+      } else {
+        row.impressions = Math.round(row.impressions * (1 + percentDelta));
+        row.clicks = Math.round(row.impressions * row.ctr);
+      }
+
+      // Re-render table and metrics
+      let totalAssignedSpendUSD = activePlanRows.reduce((acc, r) => acc + r.allocatedUSD, 0);
+      let totalImpressions = activePlanRows.reduce((acc, r) => acc + r.impressions, 0);
+      let totalClicks = activePlanRows.reduce((acc, r) => acc + r.clicks, 0);
+
+      const budgetInput = parseFloat(document.getElementById('cfgBudget').value) || 0;
+      const budgetUSD = currentCurrency === 'NGN' ? (budgetInput / USD_TO_NGN) : budgetInput;
+
+      renderMediaPlanTable(activePlanRows, totalAssignedSpendUSD, totalImpressions, totalClicks, budgetUSD);
+      renderSummaryCards(totalAssignedSpendUSD, totalImpressions, totalClicks, budgetUSD);
+    }
+
+    function setCurrency(curr) {
+      if (currentCurrency === curr) return;
+      const oldCurr = currentCurrency;
+      currentCurrency = curr;
+
+      const budgetEl = document.getElementById('cfgBudget');
+      const currentVal = parseFloat(budgetEl.value) || 0;
+
+      if (curr === 'USD') {
+        budgetEl.value = Math.round(currentVal / USD_TO_NGN);
+        document.getElementById('currBtnUSD').className = 'px-2.5 py-1 rounded bg-jumia-orange text-white transition shadow-sm flex items-center space-x-1';
+        document.getElementById('currBtnNGN').className = 'px-2.5 py-1 rounded text-slate-300 hover:text-white transition flex items-center space-x-1';
+        document.getElementById('budgetSymbolPrefix').innerText = '$';
+        document.getElementById('currencyBadge').innerText = 'USD ($)';
+      } else {
+        budgetEl.value = Math.round(currentVal * USD_TO_NGN);
+        document.getElementById('currBtnNGN').className = 'px-2.5 py-1 rounded bg-jumia-orange text-white transition shadow-sm flex items-center space-x-1';
+        document.getElementById('currBtnUSD').className = 'px-2.5 py-1 rounded text-slate-300 hover:text-white transition flex items-center space-x-1';
+        document.getElementById('budgetSymbolPrefix').innerText = '₦';
+        document.getElementById('currencyBadge').innerText = 'NGN (₦)';
+      }
+
+      renderBudgetPresets();
+      runPlanCalculation();
+      populateRateCardTable();
+    }
+
+    function renderBudgetPresets() {
+      const container = document.getElementById('budgetPresets');
+      const presets = currentCurrency === 'NGN'
+        ? [ { label: '₦2.5M', val: 2500000 }, { label: '₦5M', val: 5000000 }, { label: '₦10M', val: 10000000 }, { label: '₦20M', val: 20000000 } ]
+        : [ { label: '$2K', val: 2000 }, { label: '$5K', val: 5000 }, { label: '$10K', val: 10000 }, { label: '$20K', val: 20000 } ];
+
+      container.innerHTML = presets.map(p => `
+        <button onclick="setBudgetValue(${p.val})" class="text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 px-2 py-0.5 rounded transition">
+          ${p.label}
+        </button>
+      `).join('');
+    }
+
+    function setBudgetValue(val) {
+      document.getElementById('cfgBudget').value = val;
+      runPlanCalculation();
+    }
+
+    function updateDurationLabel() {
+      const val = document.getElementById('cfgDuration').value;
+      document.getElementById('durationVal').innerText = val + ' Days';
+    }
+
+    function onEventChanged() {
+      runPlanCalculation();
+    }
+
+    function applyPreset(key) {
+      const p = PRESETS[key];
+      if (!p) return;
+
+      document.getElementById('cfgBrand').value = p.brand;
+      document.getElementById('cfgCampaign').value = p.campaign;
+      document.getElementById('cfgCategory').value = p.category;
+      document.getElementById('cfgDuration').value = p.duration;
+      document.getElementById('cfgEvent').value = p.event;
+      updateDurationLabel();
+
+      // Set objective radio
+      const radio = document.querySelector(`input[name="cfgGoal"][value="${p.goal}"]`);
+      if (radio) {
+        radio.checked = true;
+        // Update visual card styles
+        document.querySelectorAll('.objective-card').forEach(c => {
+          c.classList.remove('border-jumia-orange', 'bg-orange-50/70', 'text-jumia-navy');
+          c.classList.add('bg-slate-50');
+        });
+        radio.closest('.objective-card').classList.add('border-jumia-orange', 'bg-orange-50/70', 'text-jumia-navy');
+        radio.closest('.objective-card').classList.remove('bg-slate-50');
+      }
+
+      // Budget based on currency
+      if (currentCurrency === 'NGN') {
+        document.getElementById('cfgBudget').value = p.budget;
+      } else {
+        document.getElementById('cfgBudget').value = Math.round(p.budget / USD_TO_NGN);
+      }
+
+      runPlanCalculation();
+    }
+
+    /* =======================================================================
+       8. TAB NAVIGATION
+       ======================================================================= */
+    function switchTab(tabId) {
+      document.getElementById('tabContentPlan').classList.add('hidden');
+      document.getElementById('tabContentRatecard').classList.add('hidden');
+      document.getElementById('tabContentCalendar').classList.add('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('border-jumia-orange', 'text-jumia-navy', 'bg-orange-50/70');
+        btn.classList.add('border-transparent', 'text-slate-600');
+      });
+
+      if (tabId === 'plan') {
+        document.getElementById('tabContentPlan').classList.remove('hidden');
+        document.getElementById('tabBtnPlan').classList.add('border-jumia-orange', 'text-jumia-navy', 'bg-orange-50/70');
+        document.getElementById('tabBtnPlan').classList.remove('border-transparent', 'text-slate-600');
+      } else if (tabId === 'ratecard') {
+        document.getElementById('tabContentRatecard').classList.remove('hidden');
+        document.getElementById('tabBtnRatecard').classList.add('border-jumia-orange', 'text-jumia-navy', 'bg-orange-50/70');
+        document.getElementById('tabBtnRatecard').classList.remove('border-transparent', 'text-slate-600');
+        populateRateCardTable();
+      } else if (tabId === 'calendar') {
+        document.getElementById('tabContentCalendar').classList.remove('hidden');
+        document.getElementById('tabBtnCalendar').classList.add('border-jumia-orange', 'text-jumia-navy', 'bg-orange-50/70');
+        document.getElementById('tabBtnCalendar').classList.remove('border-transparent', 'text-slate-600');
+        populateCalendarCards();
+      }
+    }
+
+    /* =======================================================================
+       9. RATE CARD & CALENDAR DIRECTORIES
+       ======================================================================= */
+    function populateRateCardTable() {
+      const tbody = document.getElementById('rateCardBody');
+      const query = (document.getElementById('rateSearchInput')?.value || '').toLowerCase();
+
+      const filtered = RATE_CARD_ITEMS.filter(item => {
+        return item.name.toLowerCase().includes(query) ||
+               item.channel.toLowerCase().includes(query) ||
+               item.funnel.toLowerCase().includes(query) ||
+               item.specs.toLowerCase().includes(query);
+      });
+
+      tbody.innerHTML = filtered.map(item => {
+        const rateNGN = '₦' + Math.round(item.unitCostUSD * USD_TO_NGN).toLocaleString('en-NG');
+        const rateUSD = '$' + item.unitCostUSD.toLocaleString('en-US');
+
+        return `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-200">
+            <td class="p-3">
+              <span class="inline-block px-2 py-0.5 rounded font-bold text-[10px] ${item.colorClass}">
+                ${item.channel}
+              </span>
+            </td>
+            <td class="p-3">
+              <div class="font-bold text-slate-900">${item.name}</div>
+              <span class="text-[10px] text-slate-400">${item.tag}</span>
+            </td>
+            <td class="p-3 font-semibold text-slate-700">${item.funnel}</td>
+            <td class="p-3 font-mono text-slate-600">${item.metric}</td>
+            <td class="p-3 text-right font-mono font-bold text-slate-800">${rateUSD}</td>
+            <td class="p-3 text-right font-mono font-bold text-jumia-navy">${rateNGN}</td>
+            <td class="p-3 text-center font-mono font-bold text-emerald-700 bg-emerald-50/30">${formatPercent(item.ctr)}</td>
+            <td class="p-3 text-[11px] text-slate-600">
+              <div>${item.specs}</div>
+              <div class="text-[10px] text-jumia-orange font-medium mt-0.5">${item.audience}</div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterRateCardTable() {
+      populateRateCardTable();
+    }
+
+    function populateCalendarCards() {
+      const container = document.getElementById('calendarCardsContainer');
+      container.innerHTML = COMMERCIAL_EVENTS.map(ev => `
+        <div class="rounded-xl border p-4 shadow-xs flex flex-col justify-between ${ev.color} transition hover:shadow-md">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-extrabold text-sm text-slate-900">${ev.month}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+                ev.tier.includes('Super') ? 'bg-red-600 text-white' :
+                ev.tier.includes('Tier 1') ? 'bg-blue-600 text-white' :
+                ev.tier.includes('Tier 2') ? 'bg-amber-500 text-white' : 'bg-slate-200 text-slate-700'
+              }">
+                ${ev.tier}
+              </span>
+            </div>
+            <h4 class="font-bold text-slate-800 text-xs mb-1">${ev.name}</h4>
+            <p class="text-[11px] text-slate-500 mb-2"><strong>Focus:</strong> ${ev.focus}</p>
+            <p class="text-[11px] text-slate-600 bg-white/70 p-2 rounded border border-slate-200">${ev.strategy}</p>
+          </div>
+          <button onclick="selectEventFromRoadmap('${ev.name}')" class="mt-3 w-full py-1.5 px-3 bg-slate-800 hover:bg-jumia-orange text-white text-xs font-semibold rounded transition text-center flex items-center justify-center gap-1">
+            <span>Apply to Media Plan</span>
+            <i class="ph ph-arrow-right"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function selectEventFromRoadmap(evName) {
+      const select = document.getElementById('cfgEvent');
+      for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].text.includes(evName) || select.options[i].value.includes(evName.split(' - ')[1] || evName)) {
+          select.selectedIndex = i;
+          break;
+        }
+      }
+      switchTab('plan');
+      runPlanCalculation();
+    }
+
+    /* =======================================================================
+       10. CSV EXPORT UTILITY
+       ======================================================================= */
+    function exportToCSV() {
+      if (!activePlanRows || !activePlanRows.length) return;
+
+      const brand = document.getElementById('cfgBrand').value;
+      const campaign = document.getElementById('cfgCampaign').value;
+      const category = document.getElementById('cfgCategory').value;
+      const eventName = document.getElementById('cfgEvent').value;
+
+      let csv = `Jumia Advertising Media Plan - 2026 Rate Card Architecture\n`;
+      csv += `Brand,${brand}\n`;
+      csv += `Campaign,${campaign}\n`;
+      csv += `Category,${category}\n`;
+      csv += `Commercial Event,${eventName}\n`;
+      csv += `Currency,${currentCurrency}\n\n`;
+
+      csv += `Channel,Placement,Audience Target,Landing Page,Pricing Metric,Rate (${currentCurrency}),Flight Qty,Spend (${currentCurrency}),Forecast Impressions,Benchmark CTR,Forecast Clicks\n`;
+
+      activePlanRows.forEach(r => {
+        const rate = currentCurrency === 'NGN' ? Math.round(r.unitCostUSD * USD_TO_NGN) : r.unitCostUSD;
+        const spend = currentCurrency === 'NGN' ? Math.round(r.allocatedUSD * USD_TO_NGN) : Math.round(r.allocatedUSD);
+        const ctrFormatted = (r.ctr * 100).toFixed(2) + '%';
+
+        csv += `"${r.channel}","${r.name}","${r.audience}","${r.landingPage}","${r.metric}",${rate},"${r.flightQty}",${spend},${r.impressions},"${ctrFormatted}",${r.clicks}\n`;
+      });
+
+      const totalSpend = activePlanRows.reduce((a, b) => a + (currentCurrency === 'NGN' ? b.allocatedUSD * USD_TO_NGN : b.allocatedUSD), 0);
+      const totalImps = activePlanRows.reduce((a, b) => a + b.impressions, 0);
+      const totalClicks = activePlanRows.reduce((a, b) => a + b.clicks, 0);
+      const blendedCTR = totalImps > 0 ? ((totalClicks / totalImps) * 100).toFixed(2) + '%' : '0%';
+
+      csv += `TOTALS,,,,,,${Math.round(totalSpend)},${totalImps},"${blendedCTR}",${totalClicks}\n`;
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('href', url);
+      a.setAttribute('download', `Jumia_Media_Plan_${brand.replace(/\s+/g, '_')}_2026.csv`);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    /* =======================================================================
+       11. INITIALIZATION ON LOAD
+       ======================================================================= */
+    window.onload = function() {
+      renderBudgetPresets();
+      updateDurationLabel();
+      runPlanCalculation();
+      populateRateCardTable();
+      populateCalendarCards();
+
+      // Setup dynamic visual radio styling
+      document.querySelectorAll('input[name="cfgGoal"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          document.querySelectorAll('.objective-card').forEach(c => {
+            c.classList.remove('border-jumia-orange', 'bg-orange-50/70', 'text-jumia-navy');
+            c.classList.add('bg-slate-50');
+          });
+          if (this.checked) {
+            this.closest('.objective-card').classList.add('border-jumia-orange', 'bg-orange-50/70', 'text-jumia-navy');
+            this.closest('.objective-card').classList.remove('bg-slate-50');
+          }
+        });
+      });
+    };
+  </script>
+</body>
+</html>
